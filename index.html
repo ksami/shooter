@@ -11,7 +11,7 @@
       window.onload = function() {
 
         const SPEED_MOVE_PLAYER = 500,
-          RATE_FIRE_PLAYER = 400,
+          RATE_FIRE_PLAYER = 800,
           SPEED_MOVE_LASER = 1000;
 
         var game = new Phaser.Game(600, 800, Phaser.AUTO, "", {
@@ -35,7 +35,25 @@
           game.physics.arcade.bounds = new Phaser.Rectangle(108, 0, game.world.width-216, game.world.height);
 
           // Background
-          game.add.sprite(0, 0, "background");
+          game.stage.backgroundColor = "#000000";
+          var graphics = game.add.graphics();
+          graphics.lineStyle(5, 0x00FF00, 1);
+          graphics.drawRect(
+            game.physics.arcade.bounds.x,
+            game.physics.arcade.bounds.y,
+            game.physics.arcade.bounds.width,
+            game.physics.arcade.bounds.height
+          );
+          graphics.moveTo(
+            0,
+            game.world.height/2
+          );
+          graphics.lineTo(
+            game.world.width,
+            game.world.height/2
+          );
+
+          // game.add.sprite(0, 0, "background");
 
           // Player
           player1 = new Player(game, game.world.width/2, game.world.height, {
@@ -58,12 +76,17 @@
         }
 
         function update() {
+          game.physics.arcade.overlap(player1.object, player2.lasers, player2.onScore, null, player2);
+          game.physics.arcade.overlap(player2.object, player1.lasers, player1.onScore, null, player1);
+
           player1.update();
           // player2.update();
           player2.fire();
         }
 
         function render() {
+          game.debug.text("p1: " + player1.score, 32, 16);
+          game.debug.text("p2: " + player2.score, 32, 32);
         }
 
       };

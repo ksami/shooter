@@ -5,6 +5,7 @@ class Player {
     // Internal
     this._game = game;
     this._timeNextFire = 0;
+    this._scoreCount = 0;
 
     // Constants
     this.SPEED_MOVE = opts.SPEED_MOVE || 400;
@@ -27,16 +28,20 @@ class Player {
     this.keys = this._game.input.keyboard.addKeys({
       "left": opts.keys.left || Phaser.KeyCode.A,
       "right": opts.keys.right || Phaser.KeyCode.D,
-      "fire": opts.keys.fire || Phaser.KeyCode.F
+      "fire": opts.keys.fire || Phaser.KeyCode.W
     });
 
     // Lasers
     this.lasers = this._game.add.group();
     this.lasers.enableBody = true;
     this.lasers.physicsBodyType = Phaser.Physics.ARCADE;
-    this.lasers.createMultiple(10, "laser", null, false);
+    this.lasers.createMultiple(5, "laser", null, false);
     this.lasers.setAll("checkWorldBounds", true);
     this.lasers.setAll("outOfBoundsKill", true);
+  }
+
+  get score() {
+    return this._scoreCount;
   }
 
   update() {
@@ -69,5 +74,11 @@ class Player {
       laser.reset(this.object.x, this.object.y);
       laser.body.velocity.y = this.isFacingUp ? -this.SPEED_MOVE_LASER : this.SPEED_MOVE_LASER;
     }
+  }
+
+
+  onScore(otherPlayer, laser) {
+    laser.kill();
+    this._scoreCount++;
   }
 }
