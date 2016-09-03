@@ -78,7 +78,7 @@
             keys: {
               left: Phaser.KeyCode.LEFT,
               right: Phaser.KeyCode.RIGHT,
-              fire: Phaser.KeyCode.L
+              fire: Phaser.KeyCode.UP
             }
           }));
           manager.players.push(new Player(game, game.world.width/2, game.world.height/2, {
@@ -98,7 +98,7 @@
 
         function render() {
           manager.players.forEach((player, idx)=>{
-            game.debug.spriteInfo(player.object, 32, 128*(idx+1));
+            // game.debug.spriteInfo(player.object, 32, 128*(idx+1));
             game.debug.text(`p${idx+1}: ${player.score}`, 32, 16*(idx+1));
           });
         }
