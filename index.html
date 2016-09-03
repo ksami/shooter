@@ -125,7 +125,7 @@
         function render() {
           manager.players.forEach((player, idx)=>{
             // game.debug.spriteInfo(player.object, 32, 128*(idx+1));
-            game.debug.text(`p${idx+1}: ${player.score}`, 32, 16*(idx+1));
+            game.debug.text(`${player._isAI ? "AI" : `P${idx+1}`}: ${player.score}`, 32, 16*(idx+1));
           });
         }
 
