@@ -4,6 +4,7 @@ class Player {
 
     // Internal
     this._isAI = opts.isAI || false;
+    this._isAutoFire = opts.isAutoFire || false;
     this._game = game;
     this._timeNextFire = 0;
     this._scoreCount = 0;
@@ -54,9 +55,11 @@ class Player {
     return this._scoreCount;
   }
 
-  update() {
-    if (!this._isAI) {
+  update(direction) {
+    if (!this._isAI && !this._isAutoFire) {
       this.handleMovement();
+    } else if (this._isAutoFire) {
+      this.mobileHandleMovement(direction);
     } else {
       this.aiHandleMovement();
     }
@@ -75,6 +78,18 @@ class Player {
     if (this.keys.fire.isDown) {
       this.fire();
     }
+  }
+
+  mobileHandleMovement(direction) {
+    if (direction === "left") {
+      this.moveLeft();
+    } else if (direction === "right") {
+      this.moveRight();
+    } else if(direction === "stop") {
+      this.object.body.velocity.x = 0;
+    }
+
+    this.fire();
   }
 
   aiHandleMovement() {

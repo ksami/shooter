@@ -22,7 +22,9 @@
           render: render
         });
 
-        var manager = new Manager(game);
+        var isMobile,
+          manager = new Manager(game);
+
 
         function preload() {
           game.load.image("background", "assets/background-vert.png");
@@ -31,6 +33,8 @@
         }
 
         function create() {
+          isMobile = !game.device.desktop;
+
           //  Physics
           game.physics.startSystem(Phaser.Physics.ARCADE);
           game.physics.arcade.bounds = new Phaser.Rectangle(108, 0, game.world.width-216, game.world.height);
@@ -45,14 +49,15 @@
             game.physics.arcade.bounds.width,
             game.physics.arcade.bounds.height
           );
-          graphics.moveTo(
-            0,
-            game.world.height/2
-          );
-          graphics.lineTo(
-            game.world.width,
-            game.world.height/2
-          );
+          graphics.moveTo(0, game.world.height/2);
+          graphics.lineTo(game.world.width, game.world.height/2);
+          console.log(game.device.desktop);
+          console.log("isMobile: ", isMobile);
+          if (isMobile) {
+            graphics.lineStyle(5, 0x006600, 0.5);
+            graphics.moveTo(game.world.width/2, 0);
+            graphics.lineTo(game.world.width/2, game.world.height);
+          }
 
           // game.add.sprite(0, 0, "background");
 
@@ -62,6 +67,7 @@
             SPEED_MOVE: SPEED_MOVE_PLAYER,
             SPEED_MOVE_LASER: SPEED_MOVE_LASER,
             isFacingUp: true,
+            isAutoFire: isMobile,
             isAI: false,
             keys: {
               left: Phaser.KeyCode.A,
@@ -74,6 +80,7 @@
             SPEED_MOVE: SPEED_MOVE_PLAYER,
             SPEED_MOVE_LASER: SPEED_MOVE_LASER,
             isFacingUp: false,
+            isAutoFire: isMobile,
             isAI: false,
             keys: {
               left: Phaser.KeyCode.LEFT,
@@ -90,6 +97,25 @@
             AI_RATE_ACTION: 50
           }));
 
+
+          // Mobile Input
+          game.input.onDown.add(pointer=>{
+            var isTop = (pointer.y < game.world.height/2),
+              isLeft = (pointer.x < game.world.width/2),
+              player = isTop ? manager.players[1] : manager.players[0];
+
+            if (isLeft) {
+              player.update("left");
+            } else {
+              player.update("right");
+            }
+          });
+          game.input.onUp.add(pointer=>{
+            var isTop = (pointer.y < game.world.height/2),
+              player = isTop ? manager.players[1] : manager.players[0];
+
+            player.update("stop");
+          });
         }
 
         function update() {
