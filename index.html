@@ -14,28 +14,30 @@
           RATE_FIRE_PLAYER = 200,
           SPEED_MOVE_LASER = 1000;
 
-        var game = new Phaser.Game(800, 600, Phaser.AUTO, "", { preload: preload, create: create, update: update });
-        var player1,
-          lasers,
-          keys,
-          timeNextFire = 0;
+        var game = new Phaser.Game(600, 800, Phaser.AUTO, "", {
+          preload: preload,
+          create: create,
+          update: update
+        });
+
+        var player1;
 
         function preload() {
-          game.load.image("background", "assets/background.png");
-          game.load.image("player", "assets/shooter.png");
-          game.load.image("laser", "assets/laser.png");
+          game.load.image("background", "assets/background-vert.png");
+          game.load.image("player", "assets/shooter-vert.png");
+          game.load.image("laser", "assets/laser-vert.png");
         }
 
         function create() {
           //  Physics
           game.physics.startSystem(Phaser.Physics.ARCADE);
-          game.physics.arcade.bounds = new Phaser.Rectangle(0, 108, game.world.width, game.world.height-216);
+          game.physics.arcade.bounds = new Phaser.Rectangle(108, 0, game.world.width-216, game.world.height);
 
           // Background
           game.add.sprite(0, 0, "background");
 
           // Player
-          player1 = new Player(game, {
+          player1 = new Player(game, game.world.width/2, game.world.height, {
             RATE_FIRE: RATE_FIRE_PLAYER,
             SPEED_MOVE: SPEED_MOVE_PLAYER,
             SPEED_MOVE_LASER: SPEED_MOVE_LASER

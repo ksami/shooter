@@ -1,5 +1,5 @@
 class Player {
-  constructor(game, opts={}) {
+  constructor(game, x, y, opts={}) {
     opts.keys = opts.keys || {};
 
     // Internal
@@ -12,7 +12,7 @@ class Player {
     this.SPEED_MOVE_LASER = opts.SPEED_MOVE_LASER || 1000;
 
     // Sprite
-    this.object = this._game.add.sprite(0, this._game.world.height/2, "player");
+    this.object = this._game.add.sprite(x, y, "player");
     this.object.anchor.x = 0.5;
     this.object.anchor.y = 0.5;
 
@@ -38,12 +38,12 @@ class Player {
 
   update() {
     //  Reset the players velocity (movement)
-    this.object.body.velocity.y = 0;
+    this.object.body.velocity.x = 0;
 
     if (this.keys.left.isDown) {
-      this.moveUp();
+      this.moveLeft();
     } else if (this.keys.right.isDown) {
-      this.moveDown();
+      this.moveRight();
     }
 
     if (this.keys.fire.isDown) {
@@ -51,12 +51,12 @@ class Player {
     }
   }
 
-  moveUp() {
-    this.object.body.velocity.y = -this.SPEED_MOVE;
+  moveLeft() {
+    this.object.body.velocity.x = -this.SPEED_MOVE;
   }
 
-  moveDown() {
-    this.object.body.velocity.y = this.SPEED_MOVE;
+  moveRight() {
+    this.object.body.velocity.x = this.SPEED_MOVE;
   }
 
   fire() {
@@ -64,7 +64,7 @@ class Player {
       this._timeNextFire = this._game.time.now + this.RATE_FIRE;
       var laser = this.lasers.getFirstDead();
       laser.reset(this.object.x, this.object.y);
-      laser.body.velocity.x = this.SPEED_MOVE_LASER;
+      laser.body.velocity.y = -this.SPEED_MOVE_LASER;
     }
   }
 }
