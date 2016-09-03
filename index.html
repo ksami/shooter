@@ -10,17 +10,18 @@
     <script type="text/javascript">
       window.onload = function() {
 
-        const SPEED_MOVE_PLAYER = 400,
-          RATE_FIRE_PLAYER = 200,
+        const SPEED_MOVE_PLAYER = 500,
+          RATE_FIRE_PLAYER = 400,
           SPEED_MOVE_LASER = 1000;
 
         var game = new Phaser.Game(600, 800, Phaser.AUTO, "", {
           preload: preload,
           create: create,
-          update: update
+          update: update,
+          render: render
         });
 
-        var player1;
+        var player1, player2;
 
         function preload() {
           game.load.image("background", "assets/background-vert.png");
@@ -40,12 +41,29 @@
           player1 = new Player(game, game.world.width/2, game.world.height, {
             RATE_FIRE: RATE_FIRE_PLAYER,
             SPEED_MOVE: SPEED_MOVE_PLAYER,
-            SPEED_MOVE_LASER: SPEED_MOVE_LASER
+            SPEED_MOVE_LASER: SPEED_MOVE_LASER,
+            isFacingUp: true
           });
+          player2 = new Player(game, game.world.width/2, 0, {
+            RATE_FIRE: RATE_FIRE_PLAYER,
+            SPEED_MOVE: SPEED_MOVE_PLAYER,
+            SPEED_MOVE_LASER: SPEED_MOVE_LASER,
+            keys: {
+              left: Phaser.KeyCode.LEFT,
+              right: Phaser.KeyCode.RIGHT,
+              fire: Phaser.KeyCode.L
+            }
+          });
+
         }
 
         function update() {
           player1.update();
+          // player2.update();
+          player2.fire();
+        }
+
+        function render() {
         }
 
       };

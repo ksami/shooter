@@ -13,8 +13,11 @@ class Player {
 
     // Sprite
     this.object = this._game.add.sprite(x, y, "player");
-    this.object.anchor.x = 0.5;
-    this.object.anchor.y = 0.5;
+    this.object.anchor.setTo(0.5, 0.5);
+    this.isFacingUp = opts.isFacingUp || false;
+    if (!this.isFacingUp){
+      this.object.angle = 180;
+    }
 
     // Physics
     this._game.physics.arcade.enable(this.object);
@@ -64,7 +67,7 @@ class Player {
       this._timeNextFire = this._game.time.now + this.RATE_FIRE;
       var laser = this.lasers.getFirstDead();
       laser.reset(this.object.x, this.object.y);
-      laser.body.velocity.y = -this.SPEED_MOVE_LASER;
+      laser.body.velocity.y = this.isFacingUp ? -this.SPEED_MOVE_LASER : this.SPEED_MOVE_LASER;
     }
   }
 }
