@@ -6,6 +6,7 @@
   </head>
   <body>
     <script src="/js/phaser.min.js"></script>
+    <script src="/js/player.js"></script>
     <script type="text/javascript">
       window.onload = function() {
 
@@ -14,7 +15,7 @@
           SPEED_MOVE_LASER = 1000;
 
         var game = new Phaser.Game(800, 600, Phaser.AUTO, "", { preload: preload, create: create, update: update });
-        var player,
+        var player1,
           lasers,
           keys,
           timeNextFire = 0;
@@ -34,50 +35,15 @@
           game.add.sprite(0, 0, "background");
 
           // Player
-          player = game.add.sprite(0, game.world.height/2, "player");
-          player.anchor.x = 0.5;
-          player.anchor.y = 0.5;
-
-          game.physics.arcade.enable(player);
-          player.body.collideWorldBounds = true;
-
-          // Lasers
-          lasers = game.add.group();
-          lasers.enableBody = true;
-          lasers.physicsBodyType = Phaser.Physics.ARCADE;
-
-          lasers.createMultiple(10, "laser", null, false);
-          lasers.setAll("checkWorldBounds", true);
-          lasers.setAll("outOfBoundsKill", true);
-
-          // Input
-          keys = game.input.keyboard.addKeys({
-            "left": Phaser.KeyCode.A,
-            "right": Phaser.KeyCode.D,
-            "fire": Phaser.KeyCode.W
+          player1 = new Player(game, {
+            RATE_FIRE: RATE_FIRE_PLAYER,
+            SPEED_MOVE: SPEED_MOVE_PLAYER,
+            SPEED_MOVE_LASER: SPEED_MOVE_LASER
           });
         }
 
         function update() {
-          //  Reset the players velocity (movement)
-          player.body.velocity.y = 0;
-
-          if (keys.left.isDown) {
-            //  Move up
-            player.body.velocity.y = -SPEED_MOVE_PLAYER;
-          } else if (keys.right.isDown) {
-            //  Move down
-            player.body.velocity.y = SPEED_MOVE_PLAYER;
-          }
-
-          if (keys.fire.isDown) {
-            if (game.time.now > timeNextFire && lasers.countDead() > 0) {
-              timeNextFire = game.time.now + RATE_FIRE_PLAYER;
-              var laser = lasers.getFirstDead();
-              laser.reset(player.x, player.y);
-              laser.body.velocity.x = SPEED_MOVE_LASER;
-            }
-          }
+          player1.update();
         }
 
       };
