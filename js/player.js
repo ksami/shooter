@@ -3,11 +3,10 @@ class Player {
     opts.keys = opts.keys || {};
 
     // Internal
-    this._isAI = opts.isAI || false;
-    this._isAutoFire = opts.isAutoFire || false;
     this._game = game;
     this._timeNextFire = 0;
     this._scoreCount = 0;
+    this._hitCount = 0;
     this._facingUpNegator = -1;
 
     // Constants
@@ -30,16 +29,11 @@ class Player {
     this.object.body.collideWorldBounds = true;
     
     // Input
-    if (!this._isAI) {
-      this.keys = this._game.input.keyboard.addKeys({
-        "left": opts.keys.left || Phaser.KeyCode.A,
-        "right": opts.keys.right || Phaser.KeyCode.D,
-        "fire": opts.keys.fire || Phaser.KeyCode.W
-      });
-    } else {
-      this._aiTimeNextAction = 0;
-      this.AI_RATE_ACTION = opts.AI_RATE_ACTION || 100;
-    }
+    this.keys = this._game.input.keyboard.addKeys({
+      "left": opts.keys.left || Phaser.KeyCode.A,
+      "right": opts.keys.right || Phaser.KeyCode.D,
+      "fire": opts.keys.fire || Phaser.KeyCode.W
+    });
 
     // Lasers
     this.lasers = this._game.add.group();
@@ -55,14 +49,8 @@ class Player {
     return this._scoreCount;
   }
 
-  update(direction) {
-    if (!this._isAI && !this._isAutoFire) {
-      this.handleMovement();
-    } else if (this._isAutoFire) {
-      this.mobileHandleMovement(direction);
-    } else {
-      this.aiHandleMovement();
-    }
+  update() {
+    this.handleMovement();
   }
 
   handleMovement() {
@@ -79,36 +67,6 @@ class Player {
       this.fire();
     }
   }
-
-  mobileHandleMovement(direction) {
-    if (direction === "left") {
-      this.moveLeft();
-    } else if (direction === "right") {
-      this.moveRight();
-    } else if(direction === "stop") {
-      this.object.body.velocity.x = 0;
-    }
-
-    this.fire();
-  }
-
-  aiHandleMovement() {
-    if (this._game.time.now > this._aiTimeNextAction) {
-      this._aiTimeNextAction = this._game.time.now + this.AI_RATE_ACTION;
-
-      var rand = this._game.rnd.integerInRange(0, 100);
-      if (rand <= 25) {
-        this.moveLeft();
-      } else if(rand <= 50) {
-        this.moveRight();
-      } else if (rand <= 90) {
-        this.fire();
-      } else {
-        this.flipDirection();
-      }
-    }
-  }
-
 
   flipDirection() {
     this._facingUpNegator *= -1;
@@ -136,5 +94,9 @@ class Player {
 
   onScore() {
     this._scoreCount++;
+  }
+
+  onHit() {
+    this._hitCount++;
   }
 }

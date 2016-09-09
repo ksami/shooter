@@ -16,5 +16,6 @@ class Manager {
   onScore(playerObject, laser) {
     laser.kill();
     laser.parent.owner.onScore();
+    playerObject.owner.onHit();
   }
 }

@@ -7,13 +7,14 @@
   <body>
     <script src="js/phaser.min.js"></script>
     <script src="js/player.js"></script>
+    <script src="js/ai.js"></script>
     <script src="js/manager.js"></script>
     <script type="text/javascript">
       window.onload = function() {
 
         const SPEED_MOVE_PLAYER = 500,
-          RATE_FIRE_PLAYER = 800,
-          SPEED_MOVE_LASER = 1000;
+          RATE_FIRE_PLAYER = 700,
+          SPEED_MOVE_LASER = 1100;
 
         var game = new Phaser.Game(600, 800, Phaser.AUTO, "", {
           preload: preload,
@@ -51,8 +52,6 @@
           );
           graphics.moveTo(0, game.world.height/2);
           graphics.lineTo(game.world.width, game.world.height/2);
-          console.log(game.device.desktop);
-          console.log("isMobile: ", isMobile);
           if (isMobile) {
             graphics.lineStyle(5, 0x006600, 0.5);
             graphics.moveTo(game.world.width/2, 0);
@@ -67,35 +66,26 @@
             SPEED_MOVE: SPEED_MOVE_PLAYER,
             SPEED_MOVE_LASER: SPEED_MOVE_LASER,
             isFacingUp: true,
-            isAutoFire: isMobile,
-            isAI: false,
             keys: {
               left: Phaser.KeyCode.A,
               right: Phaser.KeyCode.D,
               fire: Phaser.KeyCode.W
             }
           }));
-          manager.players.push(new Player(game, game.world.width/2, 0, {
+          manager.players.push(new AI(game, game.world.width/2, 0, {
             RATE_FIRE: RATE_FIRE_PLAYER,
             SPEED_MOVE: SPEED_MOVE_PLAYER,
             SPEED_MOVE_LASER: SPEED_MOVE_LASER,
             isFacingUp: false,
-            isAutoFire: isMobile,
-            isAI: false,
-            keys: {
-              left: Phaser.KeyCode.LEFT,
-              right: Phaser.KeyCode.RIGHT,
-              fire: Phaser.KeyCode.UP
-            }
-          }));
-          manager.players.push(new Player(game, game.world.width/2, game.world.height/2, {
-            RATE_FIRE: RATE_FIRE_PLAYER,
-            SPEED_MOVE: SPEED_MOVE_PLAYER,
-            SPEED_MOVE_LASER: SPEED_MOVE_LASER,
-            isFacingUp: false,
-            isAI: true,
             AI_RATE_ACTION: 50
           }));
+          // manager.players.push(new Player(game, game.world.width/2, game.world.height/2, {
+          //   RATE_FIRE: RATE_FIRE_PLAYER,
+          //   SPEED_MOVE: SPEED_MOVE_PLAYER,
+          //   SPEED_MOVE_LASER: SPEED_MOVE_LASER,
+          //   isFacingUp: false,
+          //   AI_RATE_ACTION: 50
+          // }));
 
 
           // Mobile Input
