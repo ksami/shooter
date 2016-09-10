@@ -10,6 +10,7 @@ class Player {
     this._facingUpNegator = -1;
 
     // Constants
+    this.COLOR = opts.COLOR || 0x00ff00;
     this.SPEED_MOVE = opts.SPEED_MOVE || 400;
     this.RATE_FIRE = opts.RATE_FIRE || 200;
     this.SPEED_MOVE_LASER = opts.SPEED_MOVE_LASER || 1000;
@@ -19,6 +20,7 @@ class Player {
     this.object = this._game.add.sprite(x, y, "player");
     this.object.owner = this;
     this.object.anchor.setTo(0.5, 0.5);
+    this.object.tint = this.COLOR;
     this.isFacingUp = opts.isFacingUp || false;
     if (!this.isFacingUp) {
       this._facingUpNegator *= -1;
@@ -44,6 +46,7 @@ class Player {
     this.lasers.createMultiple(5, "laser", null, false);
     this.lasers.setAll("checkWorldBounds", true);
     this.lasers.setAll("outOfBoundsKill", true);
+    this.lasers.setAll("tint", this.COLOR);
   }
 
   get score() {

@@ -1,5 +1,7 @@
 class AI extends Player {
   constructor(game, x, y, opts={}) {
+    opts.COLOR = opts.COLOR || 0xa568fc;
+
     super(game, x, y, opts);
 
     this.AI_RATE_ACTION = opts.AI_RATE_ACTION || 100;
