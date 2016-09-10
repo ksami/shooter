@@ -1,6 +1,6 @@
 class AI extends Player {
   constructor(game, x, y, opts={}) {
-    opts.COLOR = opts.COLOR || 0xa568fc;
+    opts.COLOR = opts.COLOR || 0xffa343;
 
     super(game, x, y, opts);
 

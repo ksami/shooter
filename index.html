@@ -7,6 +7,7 @@
   <body>
     <script src="js/phaser.min.js"></script>
     <script src="js/player.js"></script>
+    <script src="js/mobileplayer.js"></script>
     <script src="js/ai.js"></script>
     <script src="js/manager.js"></script>
     <script type="text/javascript">
@@ -62,17 +63,26 @@
           // game.add.sprite(0, 0, "background");
 
           // Player
-          manager.players.push(new Player(game, game.world.width/2, game.world.height, {
-            RATE_FIRE: RATE_FIRE_PLAYER,
-            SPEED_MOVE: SPEED_MOVE_PLAYER,
-            SPEED_MOVE_LASER: SPEED_MOVE_LASER,
-            isFacingUp: true,
-            keys: {
-              left: Phaser.KeyCode.A,
-              right: Phaser.KeyCode.D,
-              fire: Phaser.KeyCode.W
-            }
-          }));
+          if (isMobile) {
+            manager.players.push(new MobilePlayer(game, game.world.width/2, game.world.height, {
+              RATE_FIRE: RATE_FIRE_PLAYER,
+              SPEED_MOVE: SPEED_MOVE_PLAYER,
+              SPEED_MOVE_LASER: SPEED_MOVE_LASER,
+              isFacingUp: true
+            }));
+          } else {
+            manager.players.push(new Player(game, game.world.width/2, game.world.height, {
+              RATE_FIRE: RATE_FIRE_PLAYER,
+              SPEED_MOVE: SPEED_MOVE_PLAYER,
+              SPEED_MOVE_LASER: SPEED_MOVE_LASER,
+              isFacingUp: true,
+              keys: {
+                left: Phaser.KeyCode.A,
+                right: Phaser.KeyCode.D,
+                fire: Phaser.KeyCode.W
+              }
+            }));
+          }
           manager.players.push(new AI(game, game.world.width/2, 0, {
             RATE_FIRE: RATE_FIRE_PLAYER,
             SPEED_MOVE: SPEED_MOVE_PLAYER,
@@ -92,9 +102,10 @@
 
           // Mobile Input
           game.input.onDown.add(pointer=>{
-            var isTop = (pointer.y < game.world.height/2),
-              isLeft = (pointer.x < game.world.width/2),
-              player = isTop ? manager.players[1] : manager.players[0];
+            // var isTop = (pointer.y < game.world.height/2),
+              var isLeft = (pointer.x < game.world.width/2),
+                player = manager.players[0];
+              // player = isTop ? manager.players[1] : manager.players[0];
 
             if (isLeft) {
               player.update("left");
@@ -103,8 +114,9 @@
             }
           });
           game.input.onUp.add(pointer=>{
-            var isTop = (pointer.y < game.world.height/2),
-              player = isTop ? manager.players[1] : manager.players[0];
+            // var isTop = (pointer.y < game.world.height/2),
+            //   player = isTop ? manager.players[1] : manager.players[0];
+            var player = manager.players[0];
 
             player.update("stop");
           });
