@@ -21,9 +21,12 @@ class AI extends Player {
       atRightBounds: false
     };
 
-    this.lookZone = this._game.add.tileSprite(this._game.physics.arcade.bounds.x, this.object.bottom+this.AI_LOOK_AHEAD, this._game.physics.arcade.bounds.width, 8, "laser");
+    this.lookZone = this._game.add.tileSprite(this._game.physics.arcade.bounds.x, this.object.bottom+this.AI_LOOK_AHEAD, this._game.physics.arcade.bounds.width, 8, "transparent");
     this.lookZone.owner = this;
     this._game.physics.arcade.enable(this.lookZone);
+    
+    // Positive values embolden AI, negative values instil defensiveness
+    this._courage = 0;
 
     // debugTimed(()=>{
     //   return {
@@ -96,9 +99,11 @@ class AI extends Player {
   learnCourage() {
     if (this._hitCount > this._prevHitCount) {
       this._prevHitCount = this._hitCount;
-      this.modifyDodgeProb(12);
+      this._courage -= this._courage > -10 ? 1 : 0;
+      this.modifyDodgeProb(12-this._courage);
     } else {
-      this.modifyFireProb(4);
+      this._courage += this._courage < 10 ? 1 : 0;
+      this.modifyFireProb(4+this._courage);
     }
   }
 
@@ -137,9 +142,10 @@ class AI extends Player {
   ////////////
 
   onAlert(x, y) {
-    if (x >= this.object.centerX && x <= this.object.centerX+this.AI_LOOK_SIDE) {
+    // Decreases look to side distance based on courageousness
+    if (x >= this.object.centerX && x <= this.object.centerX+(this.AI_LOOK_SIDE-(this._courage*2))) {
       this.moveLeft();
-    } else if (x <= this.object.centerX && x >= this.object.centerX-this.AI_LOOK_SIDE) {
+    } else if (x <= this.object.centerX && x >= this.object.centerX-(this.AI_LOOK_SIDE-(this._courage*2))) {
       this.moveRight();
     } else {
       // ignore alert

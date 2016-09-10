@@ -13,7 +13,7 @@
       window.onload = function() {
 
         const SPEED_MOVE_PLAYER = 500,
-          RATE_FIRE_PLAYER = 700,
+          RATE_FIRE_PLAYER = 400,
           SPEED_MOVE_LASER = 1100;
 
         var game = new Phaser.Game(600, 800, Phaser.AUTO, "", {
@@ -31,6 +31,7 @@
           game.load.image("background", "assets/background-vert.png");
           game.load.image("player", "assets/shooter-vert.png");
           game.load.image("laser", "assets/laser-vert.png");
+          game.load.image("transparent", "assets/transparent.png");
         }
 
         function create() {
@@ -62,7 +63,7 @@
 
           // Player
           manager.players.push(new Player(game, game.world.width/2, game.world.height, {
-            RATE_FIRE: RATE_FIRE_PLAYER/4,
+            RATE_FIRE: RATE_FIRE_PLAYER,
             SPEED_MOVE: SPEED_MOVE_PLAYER,
             SPEED_MOVE_LASER: SPEED_MOVE_LASER,
             isFacingUp: true,
@@ -77,7 +78,8 @@
             SPEED_MOVE: SPEED_MOVE_PLAYER,
             SPEED_MOVE_LASER: SPEED_MOVE_LASER,
             isFacingUp: false,
-            AI_RATE_ACTION: 50
+            AI_RATE_ACTION: 100,
+            AI_RATE_LEARN: 1000
           }));
           // manager.players.push(new Player(game, game.world.width/2, game.world.height/2, {
           //   RATE_FIRE: RATE_FIRE_PLAYER,
