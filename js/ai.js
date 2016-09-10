@@ -4,6 +4,8 @@ class AI extends Player {
 
     this.AI_RATE_ACTION = opts.AI_RATE_ACTION || 100;
     this.AI_RATE_LEARN = opts.AI_RATE_LEARN || 1000;
+    this.AI_LOOK_AHEAD = opts.AI_LOOK_AHEAD || 64;
+    this.AI_LOOK_SIDE = opts.AI_LOOK_SIDE || 64;
 
     this._isAI = true;
     this._aiTimeNextAction = 0;
@@ -19,13 +21,17 @@ class AI extends Player {
       atRightBounds: false
     };
 
-    debugTimed(()=>{
-      return {
-        probLeft: this._PROB_MOVE_LEFT,
-        probRight: this._PROB_MOVE_RIGHT,
-        probFire: this._PROB_FIRE
-      };
-    });
+    this.lookZone = this._game.add.tileSprite(this._game.physics.arcade.bounds.x, this.object.bottom+this.AI_LOOK_AHEAD, this._game.physics.arcade.bounds.width, 8, "laser");
+    this.lookZone.owner = this;
+    this._game.physics.arcade.enable(this.lookZone);
+
+    // debugTimed(()=>{
+    //   return {
+    //     probLeft: this._PROB_MOVE_LEFT,
+    //     probRight: this._PROB_MOVE_RIGHT,
+    //     probFire: this._PROB_FIRE
+    //   };
+    // });
   }
 
   update() {
@@ -46,6 +52,11 @@ class AI extends Player {
       this._state.atRightBounds = false;      
     }
   }
+
+
+  //////////////
+  // Movement //
+  //////////////
 
   handleMovement() {
     if (this._game.time.now <= this._aiTimeNextAction) {
@@ -68,6 +79,10 @@ class AI extends Player {
   }
 
 
+  ////////
+  // AI //
+  ////////
+
   learn() {
     if (this._game.time.now <= this._aiTimeNextLearn) {
       return;
@@ -75,10 +90,13 @@ class AI extends Player {
 
     this._aiTimeNextLearn = this._game.time.now + this.AI_RATE_LEARN;
 
+    this.learnCourage();
+  }
+
+  learnCourage() {
     if (this._hitCount > this._prevHitCount) {
       this._prevHitCount = this._hitCount;
-      console.log("modifyDodgeProb")
-      this.modifyDodgeProb(10);
+      this.modifyDodgeProb(12);
     } else {
       this.modifyFireProb(4);
     }
@@ -95,8 +113,8 @@ class AI extends Player {
     }
 
     this._PROB_FIRE -= amt;
-    this._PROB_MOVE_LEFT += Math.floor(amt/2);
-    this._PROB_MOVE_RIGHT += Math.ceil(amt/2);
+    this._PROB_MOVE_LEFT += amt/2;
+    this._PROB_MOVE_RIGHT += amt/2;
   }
 
   modifyFireProb(amt) {
@@ -109,8 +127,23 @@ class AI extends Player {
     }
 
     this._PROB_FIRE += amt;
-    this._PROB_MOVE_LEFT -= Math.floor(amt/2);
-    this._PROB_MOVE_RIGHT -= Math.ceil(amt/2);
+    this._PROB_MOVE_LEFT -= amt/2;
+    this._PROB_MOVE_RIGHT -= amt/2;
+  }
+
+
+  ////////////
+  // Events //
+  ////////////
+
+  onAlert(x, y) {
+    if (x >= this.object.centerX && x <= this.object.centerX+this.AI_LOOK_SIDE) {
+      this.moveLeft();
+    } else if (x <= this.object.centerX && x >= this.object.centerX-this.AI_LOOK_SIDE) {
+      this.moveRight();
+    } else {
+      // ignore alert
+    }
   }
 }
 

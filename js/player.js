@@ -15,6 +15,7 @@ class Player {
     this.SPEED_MOVE_LASER = opts.SPEED_MOVE_LASER || 1000;
 
     // Sprite
+    this.id = this._game.rnd.uuid();
     this.object = this._game.add.sprite(x, y, "player");
     this.object.owner = this;
     this.object.anchor.setTo(0.5, 0.5);
